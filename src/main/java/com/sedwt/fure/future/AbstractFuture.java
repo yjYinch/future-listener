@@ -332,7 +332,7 @@ public abstract class AbstractFuture<V> implements ExtensionFuture<V> {
         if (isDone()) {
             return false;
         }
-
+        // 锁对象
         synchronized (this) {
             if (isDone()) {
                 return false;
@@ -358,6 +358,7 @@ public abstract class AbstractFuture<V> implements ExtensionFuture<V> {
             return false;
         }
 
+        // 将该对象锁住
         synchronized (this) {
             if (isDone()) {
                 return false;
@@ -368,7 +369,8 @@ public abstract class AbstractFuture<V> implements ExtensionFuture<V> {
             } else {
                 this.result = result;
             }
-            notifyAll();
+            this.notifyAll();
+            //notifyAll();
         }
         return true;
     }

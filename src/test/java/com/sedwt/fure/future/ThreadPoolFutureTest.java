@@ -19,6 +19,24 @@ public class ThreadPoolFutureTest {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         CustomFuture<String> future = new CustomFuture<>();
+
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                    String str = "hello";
+                    future.setSuccess(str);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    future.setFailure(e);
+                }
+            }
+        });
+
+        Thread.sleep(10000);
+
         future.addListener(new FutureListener<String>() {
             @Override
             public void operationComplete(ExtensionFuture<String> future) throws ExecutionException, InterruptedException {
@@ -30,21 +48,6 @@ public class ThreadPoolFutureTest {
                 // 关闭线程池
                 if (!executorService.isShutdown()){
                     executorService.shutdownNow();
-                }
-            }
-        });
-
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    int i = 1/0;
-                    String str = "hello";
-                    future.setSuccess(str);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    future.setFailure(e);
                 }
             }
         });
